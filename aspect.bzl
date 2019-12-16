@@ -295,7 +295,18 @@ def proto_compile_aspect_impl(target, ctx):
 
     mnemonic = "ProtoCompile"  # SAME
 
-    command = " ".join([protoc.path] + args)  # SAME
+    # HACK - DEC 2019
+    # In version d9a123032f8436dbc34069cfc3207f2810a494ee of stackb/rules_proto
+    # there is bug that attempts to create a service file for the imported
+    # protos, which causes an issue if the imported proto does not contain a
+    # service. More info: [LINK TO FLEXPORT PULL REQUEST]
+    output_paths = [o.path for o in outputs]
+    output_dirs = ["/".join(op.split("/")[:-1]) for op in output_paths]
+    command = " && ".join([
+        "mkdir -p {0}".format(" ".join(output_dirs)),
+        "touch {0}".format(" ".join(output_paths)),
+        "{0} {1}".format(protoc.path, " ".join(args)),
+    ])
 
     inputs = import_files.to_list() + descriptor_sets.to_list() + data
     tools = [protoc] + plugin_tools.values()
