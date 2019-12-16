@@ -299,7 +299,7 @@ def proto_compile_aspect_impl(target, ctx):
     # In version d9a123032f8436dbc34069cfc3207f2810a494ee of stackb/rules_proto
     # there is bug that attempts to create a service file for the imported
     # protos, which causes an issue if the imported proto does not contain a
-    # service. More info: [LINK TO FLEXPORT PULL REQUEST]
+    # service.
     output_paths = [o.path for o in outputs]
     output_dirs = ["/".join(op.split("/")[:-1]) for op in output_paths]
     command = " && ".join([
